@@ -4,37 +4,43 @@
     Next Muby (BETA)
 {% endblock %}
 
+{% from 'bootstrap5/nav.html' import render_nav_item %}
+
 {% block content %}
-    <div class="container col-xxl-8 px-4 py-5">
+    {% include 'navbar.html' %}
+
+    <div class="container col-xxl-8 py-5">
         {% for message in messages %}
             {% if message.author == 'assistant' %}
                 <div class="d-flex flex-row justify-content-start mb-4">
                     <img class="bg-white" src="{{ url_for('static', filename='muby.png') }}" alt="avatar 1" style="width: 45px; height: 100%;">
                     <div class="p-3 ms-3" style="border-radius: 15px; background-color: rgba(57, 192, 237,.2);">
-                        <p class="small mb-0">{{message.content}}</p>
+                        <p class="mb-0">{{message.content}}</p>
                     </div>
                 </div>
             {% else %}
                 <div class="d-flex flex-row justify-content-end mb-4">
                     <div class="p-3 me-3 border bg-body-tertiary" style="border-radius: 15px;">
-                        <p class="small mb-0">{{message.content}}</p>
+                        <p class="mb-0">{{message.content}}</p>
                     </div>
               </div>
             {% endif %}
         {% endfor %}
 
         <form method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <div class="mb-3">
                 <span>Acciones rápidas:</span>
-                <input type="submit" class="btn btn-outline-light" name="message" value="Recomiéndame una de terror"/>
-                <input type="submit" class="btn btn-outline-light" name="message" value="Recomiéndame una de acción"/>
-                <input type="submit" class="btn btn-outline-light" name="message" value="Recomiéndame una comedia"/>
+                <input type="submit" class="btn btn-sm btn-outline-light" name="message" value="Recomiéndame una de terror"/>
+                <input type="submit" class="btn btn-sm btn-outline-light" name="message" value="Recomiéndame una de acción"/>
+                <input type="submit" class="btn btn-sm btn-outline-light" name="message" value="Recomiéndame una comedia"/>
             </div>
         </form>
         <form method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <div class="input-group mb-3">
-                <input name="message" required="required" class="form-control" placeholder="Enviar mensaje a Muby" aria-label="Tu mensaje" aria-describedby="send-message"/>
-                <input type="submit" class="btn btn-primary" id="send-message" name="intent" value="Enviar"/>
+                <input name="message" required="required" class="form-control form-control-lg" placeholder="Enviar mensaje a Muby" aria-label="Tu mensaje" aria-describedby="send-message"/>
+                <input type="submit" class="btn btn-primary btn-lg" id="send-message" name="intent" value="Enviar"/>
             </div>
         </form>
     </div>

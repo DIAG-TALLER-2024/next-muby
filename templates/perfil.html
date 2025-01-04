@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Tu perfil
+{% endblock %}
+
+{% from 'bootstrap5/form.html' import render_form %}
+
+{% block content %}
+    {% include 'navbar.html' %}
+
+    <div class="container col-xxl-8 py-5">
+        <h1 class="mb-4">Tu perfil</h1>
+        {{ render_form(form) }}
+    </div>
+{% endblock %}
