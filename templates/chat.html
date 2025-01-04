@@ -23,7 +23,15 @@
             {% endif %}
         {% endfor %}
 
-       <form method="POST">
+        <form method="POST">
+            <div class="mb-3">
+                <span>Acciones rápidas:</span>
+                <input type="submit" class="btn btn-outline-light" name="message" value="Recomiéndame una de terror"/>
+                <input type="submit" class="btn btn-outline-light" name="message" value="Recomiéndame una de acción"/>
+                <input type="submit" class="btn btn-outline-light" name="message" value="Recomiéndame una comedia"/>
+            </div>
+        </form>
+        <form method="POST">
             <div class="input-group mb-3">
                 <input name="message" required="required" class="form-control" placeholder="Enviar mensaje a Muby" aria-label="Tu mensaje" aria-describedby="send-message"/>
                 <input type="submit" class="btn btn-primary" id="send-message" name="intent" value="Enviar"/>
