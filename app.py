@@ -4,12 +4,17 @@ from openai import OpenAI
 from dotenv import load_dotenv
 from db import db, db_config
 from models import User, Message
+from forms import ProfileForm
+from flask_wtf.csrf import CSRFProtect
+from os import getenv
 
 load_dotenv()
 
 client = OpenAI()
 app = Flask(__name__)
+app.secret_key = getenv('SECRET_KEY')
 bootstrap = Bootstrap5(app)
+csrf = CSRFProtect(app)
 db_config(app)
 
 
@@ -31,10 +36,19 @@ def chat():
     db.session.add(Message(content=user_message, author="user", user=user))
     db.session.commit()
 
-    messages_for_llm = [{
-        "role": "system",
-        "content": "Eres un chatbot que recomienda películas, te llamas 'Next Moby'. Tu rol es responder recomendaciones de manera breve y concisa. No repitas recomendaciones.",
-    }]
+    # Crear prompt para el modelo
+    system_prompt = '''Eres un chatbot que recomienda películas, te llamas 'Next Moby'.
+    - Tu rol es responder recomendaciones de manera breve y concisa.
+    - No repitas recomendaciones.
+    '''
+
+    # Incluir preferencias del usuario
+    if user.favorite_genre:
+        system_prompt += f'- El género favorito del usuario es: {user.favorite_genre}.\n'
+    if user.disliked_genre:
+        system_prompt += f'- El género a evitar del usuario es: {user.disliked_genre}.\n'
+
+    messages_for_llm = [{"role": "system", "content": system_prompt}]
 
     for message in user.messages:
         messages_for_llm.append({
@@ -53,6 +67,22 @@ def chat():
     db.session.commit()
 
     return render_template('chat.html', messages=user.messages)
+
+
+@app.route('/perfil', methods=['GET', 'POST'])
+def perfil():
+    user = db.session.query(User).first()
+
+    if request.method == 'POST':
+        form = ProfileForm()
+        if form.validate_on_submit():
+            user.favorite_genre = form.favorite_genre.data
+            user.disliked_genre = form.disliked_genre.data
+            db.session.commit()
+    else:
+        form = ProfileForm(obj=user)
+
+    return render_template('perfil.html', form=form)
 
 
 @app.route('/user/<username>')
