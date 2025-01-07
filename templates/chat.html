@@ -39,10 +39,11 @@
         <form method="POST">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <div class="input-group mb-3">
-                <input name="message" required="required" class="form-control form-control-lg" placeholder="Enviar mensaje a Muby" aria-label="Tu mensaje" aria-describedby="send-message"/>
-                <input type="submit" class="btn btn-primary btn-lg" id="send-message" name="intent" value="Enviar"/>
+                <input id="message" name="message" required="required" class="form-control form-control-lg" placeholder="Enviar mensaje a Muby" aria-label="Tu mensaje" aria-describedby="send-message"/>
+                <input type="submit" class="btn btn-primary btn-lg disabled" id="send-message" name="intent" value="Enviar"/>
             </div>
         </form>
     </div>
 
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
 {% endblock %}
