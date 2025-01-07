@@ -13,6 +13,7 @@ Stack tecnológico:
 - [Flask](https://flask.palletsprojects.com/en/stable/) para la aplicación web.
 - [Boostrap](https://getbootstrap.com/) como librería de componentes (con [Bootstrap Flask](https://bootstrap-flask.readthedocs.io/en/stable/)).
 - [OpenAI API](https://platform.openai.com/) para la interacción con las personas que usan la aplicación.
+- [SQLite (con Turso)](https://turso.tech/) como base de datos.
 
 ## Instrucciones
 
