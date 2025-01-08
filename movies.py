@@ -1,8 +1,24 @@
-from simplejustwatchapi.justwatch import search
+from simplejustwatchapi.justwatch import search as justwatch_search
+import tmdbsimple as tmdb
+from dotenv import load_dotenv
+from os import getenv
+
+load_dotenv()
+tmdb.API_KEY = getenv('TMDB_API_KEY')
 
 
-def where_to_watch(movie_name):
-    results = search(movie_name, "CL", "es")
+def search(movie_name):
+    search = tmdb.Search()
+    response = search.multi(query=movie_name, language='es-CL')
+
+    if not search.results:
+        return None
+
+    return search.results[0]
+
+
+def search_platforms(movie_name):
+    results = justwatch_search(movie_name, "CL", "es")
     platforms = []
 
     if not results:

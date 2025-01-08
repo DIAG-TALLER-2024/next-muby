@@ -8,7 +8,7 @@ from forms import ProfileForm
 from flask_wtf.csrf import CSRFProtect
 from os import getenv
 import json
-from movies import where_to_watch
+from bot import search_movie_or_tv_show, where_to_watch
 
 load_dotenv()
 
@@ -29,17 +29,37 @@ tools = [
             "parameters": {
                 "type": "object",
                 "required": [
-                    "movie_name"
+                    "name"
                 ],
                 "properties": {
-                    "movie_name": {
+                    "name": {
                         "type": "string",
                         "description": "The name of the movie to search for"
                     }
                 },
                 "additionalProperties": False
             }
-        }
+        },
+    },
+    {
+        'type': 'function',
+        'function': {
+            "name": "search_movie_or_tv_show",
+            "description": "Returns information about a specified movie or TV show.",
+            "parameters": {
+                "type": "object",
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "The name of the movie/tv show to search for"
+                    }
+                },
+                "additionalProperties": False
+            }
+        },
     }
 ]
 
@@ -94,8 +114,12 @@ def chat():
 
         if tool_call.function.name == 'where_to_watch':
             arguments = json.loads(tool_call.function.arguments)
-            platforms = [platform['name'] for platform in where_to_watch(arguments['movie_name'])]
-            model_recommendation = f'Puedes ver "{arguments['movie_name']}" en {", ".join(platforms)}.'
+            name = arguments['movie_name']
+            model_recommendation = where_to_watch(client, name, user)
+        elif tool_call.function.name == 'search_movie_or_tv_show':
+            arguments = json.loads(tool_call.function.arguments)
+            name = arguments['name']
+            model_recommendation = search_movie_or_tv_show(client, name, user)
     else:
         model_recommendation = chat_completion.choices[0].message.content
 
