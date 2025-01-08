@@ -7,6 +7,8 @@ from models import User, Message
 from forms import ProfileForm
 from flask_wtf.csrf import CSRFProtect
 from os import getenv
+import json
+from movies import where_to_watch
 
 load_dotenv()
 
@@ -16,6 +18,30 @@ app.secret_key = getenv('SECRET_KEY')
 bootstrap = Bootstrap5(app)
 csrf = CSRFProtect(app)
 db_config(app)
+
+
+tools = [
+    {
+        'type': 'function',
+        'function': {
+            "name": "where_to_watch",
+            "description": "Returns a list of platforms where a specified movie can be watched.",
+            "parameters": {
+                "type": "object",
+                "required": [
+                    "movie_name"
+                ],
+                "properties": {
+                    "movie_name": {
+                        "type": "string",
+                        "description": "The name of the movie to search for"
+                    }
+                },
+                "additionalProperties": False
+            }
+        }
+    }
+]
 
 
 @app.route('/')
@@ -59,10 +85,20 @@ def chat():
     chat_completion = client.chat.completions.create(
         messages=messages_for_llm,
         model="gpt-4o",
-        temperature=1
+        temperature=1,
+        tools=tools,
     )
 
-    model_recommendation = chat_completion.choices[0].message.content
+    if chat_completion.choices[0].message.tool_calls:
+        tool_call = chat_completion.choices[0].message.tool_calls[0]
+
+        if tool_call.function.name == 'where_to_watch':
+            arguments = json.loads(tool_call.function.arguments)
+            platforms = [platform['name'] for platform in where_to_watch(arguments['movie_name'])]
+            model_recommendation = f'Puedes ver "{arguments['movie_name']}" en {", ".join(platforms)}.'
+    else:
+        model_recommendation = chat_completion.choices[0].message.content
+
     db.session.add(Message(content=model_recommendation, author="assistant", user=user))
     db.session.commit()
 
