@@ -4,20 +4,32 @@ from openai import OpenAI
 from dotenv import load_dotenv
 from db import db, db_config
 from models import User, Message
-from forms import ProfileForm
+from forms import ProfileForm, SignUpForm
 from flask_wtf.csrf import CSRFProtect
 from os import getenv
 import json
 from bot import search_movie_or_tv_show, where_to_watch
+from flask_login import LoginManager, login_required, login_user, current_user
+from flask_bcrypt import Bcrypt
+from flask import redirect, url_for
 
 load_dotenv()
 
+login_manager = LoginManager()
 client = OpenAI()
 app = Flask(__name__)
 app.secret_key = getenv('SECRET_KEY')
 bootstrap = Bootstrap5(app)
 csrf = CSRFProtect(app)
+login_manager.init_app(app)
+bcrypt = Bcrypt(app)
 db_config(app)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
 
 
 tools = [
@@ -70,8 +82,9 @@ def index():
 
 
 @app.route('/chat', methods=['GET', 'POST'])
+@login_required
 def chat():
-    user = db.session.query(User).first()
+    user = db.session.query(User).get(current_user.id)
 
     if request.method == 'GET':
         return render_template('chat.html', messages=user.messages)
@@ -130,8 +143,9 @@ def chat():
 
 
 @app.route('/perfil', methods=['GET', 'POST'])
+@login_required
 def perfil():
-    user = db.session.query(User).first()
+    user = db.session.query(User).get(current_user.id)
 
     if request.method == 'POST':
         form = ProfileForm()
@@ -143,3 +157,18 @@ def perfil():
         form = ProfileForm(obj=user)
 
     return render_template('perfil.html', form=form)
+
+
+@app.route('/sign-up', methods=['GET', 'POST'])
+def sign_up():
+    form = SignUpForm()
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            email = form.email.data
+            password = form.password.data
+            user = User(email=email, password_hash=bcrypt.generate_password_hash(password).decode('utf-8'))
+            db.session.add(user)
+            db.session.commit()
+            login_user(user)
+            return redirect(url_for('chat'))
+    return render_template('sign-up.html', form=form)
