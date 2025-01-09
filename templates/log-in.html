@@ -16,5 +16,8 @@
             {% endif %}
         {% endwith %}
         {{ render_form(form) }}
+        <p class="mt-3">
+            Si no tienes cuenta, <a href="{{ url_for('sign_up') }}">regístrate aquí</a>.
+        </p>
     </div>
 {% endblock %}

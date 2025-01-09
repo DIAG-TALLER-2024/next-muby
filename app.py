@@ -9,13 +9,15 @@ from flask_wtf.csrf import CSRFProtect
 from os import getenv
 import json
 from bot import search_movie_or_tv_show, where_to_watch
-from flask_login import LoginManager, login_required, login_user, current_user
+from flask_login import LoginManager, login_required, login_user, current_user, logout_user
 from flask_bcrypt import Bcrypt
 from flask import redirect, url_for
 
 load_dotenv()
 
 login_manager = LoginManager()
+login_manager.login_view = 'login'
+login_manager.login_message = 'Inicia sesión para continuar'
 client = OpenAI()
 app = Flask(__name__)
 app.secret_key = getenv('SECRET_KEY')
@@ -190,3 +192,9 @@ def login():
             flash("El correo o la contraseña es incorrecta.", "error")
 
     return render_template('log-in.html', form=form)
+
+
+@app.get('/logout')
+def logout():
+    logout_user()
+    return redirect('/')
