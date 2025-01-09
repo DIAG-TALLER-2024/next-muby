@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash
+from flask import Flask, render_template, request, flash, jsonify
 from flask_bootstrap import Bootstrap5
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -140,6 +140,14 @@ def chat():
 
     db.session.add(Message(content=model_recommendation, author="assistant", user=user))
     db.session.commit()
+
+    accept_header = request.headers.get('Accept')
+    if accept_header and 'application/json' in accept_header:
+        last_message = user.messages[-1]
+        return jsonify({
+            'author': last_message.author,
+            'content': last_message.content,
+        })
 
     return render_template('chat.html', messages=user.messages)
 

@@ -10,6 +10,7 @@
     {% include 'navbar.html' %}
 
     <div class="container col-xxl-8 py-5">
+        <div id="messages">
         {% for message in messages %}
             {% if message.author == 'assistant' %}
                 <div class="d-flex flex-row justify-content-start mb-4">
@@ -26,6 +27,7 @@
               </div>
             {% endif %}
         {% endfor %}
+        </div>
 
         <form method="POST">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
