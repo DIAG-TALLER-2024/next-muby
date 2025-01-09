@@ -1,10 +1,10 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, flash
 from flask_bootstrap import Bootstrap5
 from openai import OpenAI
 from dotenv import load_dotenv
 from db import db, db_config
 from models import User, Message
-from forms import ProfileForm, SignUpForm
+from forms import ProfileForm, SignUpForm, LoginForm
 from flask_wtf.csrf import CSRFProtect
 from os import getenv
 import json
@@ -172,3 +172,21 @@ def sign_up():
             login_user(user)
             return redirect(url_for('chat'))
     return render_template('sign-up.html', form=form)
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            email = form.email.data
+            password = form.password.data
+            user = db.session.query(User).filter_by(email=email).first()
+            if user and bcrypt.check_password_hash(user.password_hash, password):
+                login_user(user)
+                return redirect('chat')
+
+            flash("El correo o la contraseña es incorrecta.", "error")
+
+    return render_template('log-in.html', form=form)

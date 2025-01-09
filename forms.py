@@ -56,3 +56,9 @@ class SignUpForm(FlaskForm):
         existing_user = User.query.filter_by(email=email.data).first()  # Consulta en la base de datos
         if existing_user:
             raise ValidationError("El correo electrónico ya está registrado.")
+
+
+class LoginForm(FlaskForm):
+    email = StringField('Correo Electrónico', validators=[DataRequired(), Email(message='Esto no parece ser un correo válido')])
+    password = PasswordField('Contraseña', validators=[DataRequired(message='Este campo es obligatorio')])
+    submit = SubmitField('Iniciar Sesión')

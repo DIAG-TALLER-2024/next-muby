@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}
+    Inicio de sesión
+{% endblock %}
+{% from 'bootstrap5/form.html' import render_form %}
+{% block content %}
+    <div class="container col-xxl-8 py-5">
+        <h1 class="mb-4">Iniciar sesión</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul>
+                    {% for category, message in messages %}
+                        <li class="{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        {{ render_form(form) }}
+    </div>
+{% endblock %}
