@@ -18,7 +18,7 @@ Stack tecnológico:
 
 Utilizaremos APIs externas para enriquecer las respuestas del bot:
 
-- [The Movie DB]: https://www.themoviedb.org/signup
+- [The Movie DB](https://www.themoviedb.org/signup)
 
 ## Instrucciones
 
