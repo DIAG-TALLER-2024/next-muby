@@ -1,6 +1,7 @@
 from movies import search, search_platforms
 from openai import OpenAI
 from models import User
+from langsmith import traceable
 
 
 def build_prompt(user: User, context: str):
@@ -21,6 +22,7 @@ def build_prompt(user: User, context: str):
     return system_prompt
 
 
+@traceable(run_type="tool", name="where_to_watch")
 def where_to_watch(client: OpenAI, search_term: str, user: User):
     movie_or_tv_show = search_platforms(search_term)
 
@@ -46,6 +48,7 @@ def where_to_watch(client: OpenAI, search_term: str, user: User):
     return chat_completion.choices[0].message.content
 
 
+@traceable(run_type="tool", name="search_movie_or_tv_show")
 def search_movie_or_tv_show(client: OpenAI, search_term: str, user: User):
     movie_or_tv_show = search(search_term)
 

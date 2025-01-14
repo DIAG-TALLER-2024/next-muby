@@ -12,13 +12,14 @@ from bot import search_movie_or_tv_show, where_to_watch
 from flask_login import LoginManager, login_required, login_user, current_user, logout_user
 from flask_bcrypt import Bcrypt
 from flask import redirect, url_for
+from langsmith.wrappers import wrap_openai
 
 load_dotenv()
 
 login_manager = LoginManager()
 login_manager.login_view = 'login'
 login_manager.login_message = 'Inicia sesión para continuar'
-client = OpenAI()
+client = wrap_openai(OpenAI())
 app = Flask(__name__)
 app.secret_key = getenv('SECRET_KEY')
 bootstrap = Bootstrap5(app)
@@ -129,7 +130,7 @@ def chat():
 
         if tool_call.function.name == 'where_to_watch':
             arguments = json.loads(tool_call.function.arguments)
-            name = arguments['movie_name']
+            name = arguments['name']
             model_recommendation = where_to_watch(client, name, user)
         elif tool_call.function.name == 'search_movie_or_tv_show':
             arguments = json.loads(tool_call.function.arguments)

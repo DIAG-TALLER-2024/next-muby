@@ -14,6 +14,11 @@ Stack tecnológico:
 - [Boostrap](https://getbootstrap.com/) como librería de componentes (con [Bootstrap Flask](https://bootstrap-flask.readthedocs.io/en/stable/)).
 - [OpenAI API](https://platform.openai.com/) para la interacción con las personas que usan la aplicación.
 - [SQLite (con Turso)](https://turso.tech/) como base de datos.
+- [LangChain Smith](https://smith.langchain.com/) para observabilidad y evaluación.
+
+Utilizaremos APIs externas para enriquecer las respuestas del bot:
+
+- [The Movie DB]: https://www.themoviedb.org/signup
 
 ## Instrucciones
 
@@ -37,6 +42,29 @@ Instalar dependencias:
 pip install -r requirements.txt
 ```
 
+### Variables de entorno
+
+Necesitarás las siguientes variables de entorno:
+
+```bash
+# Usa tu API key de Open AI
+OPENAI_API_KEY=""
+# Crea una DB en Turso: https://turso.tech
+TURSO_AUTH_TOKEN=""
+TURSO_DATABASE_URL=""
+# Esto es para Flask, puedes generar uno con: python -c 'import secrets; print(secrets.token_hex())'
+SECRET_KEY=secret
+# Crea una cuenta en https://www.themoviedb.org/signup y luego ir a https://www.themoviedb.org/settings/api
+TMDB_API_KEY=""
+# Las siguientes se obtienen al crear una cuenta en LANGSMITH
+LANGSMITH_TRACING=true
+LANGSMITH_ENDPOINT=""
+LANGSMITH_API_KEY=""
+LANGSMITH_PROJECT=""
+```
+
+En desarollo local, puedes crear un archivo `.env` en la raiz del proyecto con este contenido.
+
 ### Ejecución
 
 Una vez ya lo instalaste, recuerda activar el Virtual Env:
@@ -59,3 +87,25 @@ Si descargaste el proyecto con `git clone`, para agregarlo a tu propio repositor
 1. [Crear un nuevo repositorio](https://github.com/new) (en blanco).
 2. Cambiar la URL del `origin` por la de tu nuevo repositorio: `git remote set-url origin git@github.com:tu-username/tu-nombre-de-repo.git`
 3. Listo, ahora puedes subir el código base a tu propio repositorio con `git push -u origin main`
+
+## Evaluación
+
+### Observabilidad
+
+[LangChain Smith](https://smith.langchain.com/), con tracing automático. Si lo configuras estás OK.
+
+### Evaluación
+
+Prueba de evaluación de accuracy y groundness en la carpeta `evaluator`.
+
+Primero debes crear el dataset, desde la carpeta del proyecto ejecutar (solo una vez):
+
+```sh
+python evaluator/dataset.py
+```
+
+Luego, para ejecutar una evaluación:
+
+```sh
+python -m evaluator.evaluate
+```
