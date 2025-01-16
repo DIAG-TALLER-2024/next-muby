@@ -29,15 +29,24 @@
         {% endfor %}
         </div>
 
-        <form method="POST">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-            <div class="mb-3">
-                <span>Acciones rápidas:</span>
-                <input type="submit" class="btn btn-sm btn-outline-light" name="message" value="Recomiéndame una de terror"/>
-                <input type="submit" class="btn btn-sm btn-outline-light" name="message" value="Recomiéndame una de acción"/>
-                <input type="submit" class="btn btn-sm btn-outline-light" name="message" value="Recomiéndame una comedia"/>
-            </div>
-        </form>
+        <div class="mb-3 d-flex gap-2 align-items-center">
+            <span>Acciones rápidas:</span>
+            <form method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input type="hidden" name="message" value="Recomiéndame una de terror"/>
+                <button type="submit" class="btn btn-sm btn-outline-light">Recomiéndame una de terror</button>
+            </form>
+            <form method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input type="hidden" name="message" value="Recomiéndame una de acción"/>
+                <button type="submit" class="btn btn-sm btn-outline-light">Recomiéndame una de acción</button>
+            </form>
+            <form method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input type="hidden" name="message" value="Recomiéndame una comedia"/>
+                <button type="submit" class="btn btn-sm btn-outline-light">Recomiéndame una comedia</button>
+            </form>
+        </div>
         <form method="POST">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <div class="input-group mb-3">
