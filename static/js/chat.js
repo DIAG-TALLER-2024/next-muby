@@ -1,4 +1,9 @@
 function onLoad() {
+    const messageContainers = document.querySelectorAll('.message-container')
+    for (let messageContainer of messageContainers) {
+        messageContainer.innerHTML = marked.parse(messageContainer.textContent.trim())
+    }
+
     let messageInput = document.getElementById('message')
     let submitButton = document.getElementById('send-message')
 
@@ -12,13 +17,14 @@ function onLoad() {
 
     function addMessageToChat(message) {
         let messageHTML = ''
+        const messageContent = marked.parse(message.content)
 
         if (message.author === 'assistant') {
             messageHTML = `
                 <div class="d-flex flex-row justify-content-start mb-4">
                     <img class="bg-white" src="/static/muby.png" alt="avatar 1" style="width: 45px; height: 100%;">
                     <div class="p-3 ms-3" style="border-radius: 15px; background-color: rgba(57, 192, 237, .2);">
-                        <p class="mb-0">${message.content}</p>
+                        ${messageContent}
                     </div>
                 </div>
             `;
@@ -26,7 +32,7 @@ function onLoad() {
             messageHTML = `
                 <div class="d-flex flex-row justify-content-end mb-4">
                     <div class="p-3 me-3 border bg-body-tertiary" style="border-radius: 15px;">
-                        <p class="mb-0">${message.content}</p>
+                        ${messageContent}
                     </div>
                 </div>
             `

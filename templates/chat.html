@@ -15,14 +15,14 @@
             {% if message.author == 'assistant' %}
                 <div class="d-flex flex-row justify-content-start mb-4">
                     <img class="bg-white" src="{{ url_for('static', filename='muby.png') }}" alt="avatar 1" style="width: 45px; height: 100%;">
-                    <div class="p-3 ms-3" style="border-radius: 15px; background-color: rgba(57, 192, 237,.2);">
-                        <p class="mb-0">{{message.content}}</p>
+                    <div class="p-3 ms-3 message-container" style="border-radius: 15px; background-color: rgba(57, 192, 237,.2);">
+                        {{message.content}}
                     </div>
                 </div>
             {% else %}
                 <div class="d-flex flex-row justify-content-end mb-4">
-                    <div class="p-3 me-3 border bg-body-tertiary" style="border-radius: 15px;">
-                        <p class="mb-0">{{message.content}}</p>
+                    <div class="p-3 me-3 border bg-body-tertiary message-container" style="border-radius: 15px;">
+                        {{message.content}}
                     </div>
               </div>
             {% endif %}
